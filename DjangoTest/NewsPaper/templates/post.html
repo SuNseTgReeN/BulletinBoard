@@ -1,0 +1,19 @@
+<!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+{{ post }}
+{% endblock title %}
+
+{% block content %}
+    <h1>{{ post.title }}</h1>
+    <hr>
+        <table>
+            <tr>
+                <td>{{ post.date_creation|date:'d M Y' }}</td>
+            </tr>
+        </table>
+    <p>
+      {{ post.text }}
+    </p>
+{% endblock content %}
