@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum
+from django.urls import reverse
 
 
 class Author(models.Model):
@@ -20,7 +21,7 @@ class Author(models.Model):
         self.save()
 
     def __str__(self):
-        return self.author_user.str(first_name)()
+        return str(self.author_user)
 
 
 class Category(models.Model):
@@ -65,6 +66,9 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title.title()
+
+    def get_absolute_url(self):
+        return reverse('post_detail', args=[str(self.id)])
 
 
 class PostCategory(models.Model):
