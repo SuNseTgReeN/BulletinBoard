@@ -1,7 +1,9 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from allauth.account.forms import SignupForm
+from django.contrib.auth.models import Group
 
-from .models import Post, Category
+from .models import Post
 
 
 class PostForm(forms.ModelForm):
@@ -13,14 +15,6 @@ class PostForm(forms.ModelForm):
             'text',
             'category_type',
         ]
-
-        """Все что ниже не работает"""
-
-    # class PostForms(forms.Form):
-    #     title = forms.CharField(label='Заголовок')
-    #     text = forms.CharField(label='Текст')
-    #     category_type = forms.ModelChoiceField(label='Метка', queryset=Post.objects.all())
-    #     post_category = forms.ModelChoiceField(label='Категория', queryset=Post.objects.all())
 
     def clean(self):
         cleaned_data = super().clean()
@@ -42,3 +36,14 @@ class PostForm(forms.ModelForm):
             )
 
         return cleaned_data
+
+
+class BasicSignupForm(SignupForm):
+
+    def save(self, request):
+        user = super(BasicSignupForm, self).save(request)
+        basic_group = Group.objects.get(name='common')
+        basic_group.user_set.add(user)
+        return user
+
+

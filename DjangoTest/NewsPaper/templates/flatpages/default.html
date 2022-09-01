@@ -14,7 +14,7 @@
         <!-- Responsive navbar-->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
             <div class="container">
-                <a class="navbar-brand" href="#">Django flatpages</a>
+                <a class="navbar-brand" href="/">Главная страница</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-target="#navbarResponsive"
                         aria-controls="navbarResponsive" aria-expanded="false"
@@ -23,17 +23,19 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ml-auto">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="#">Home
-                                <span class="sr-only">(current)</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/about/">About</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/contacts/">Contact</a>
-                        </li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'search' %}">Поиск</a></li>
+                        {% if request.user.is_authenticated %}
+                            {% if request.user.authors_group %}
+                                <li class="nav-item"><a class="nav-link" href="{% url 'upgrade' %}"> Стать автором </a></li>
+                            {% else %}
+                                <li class="nav-item"><a class="nav-link" href="#">Мои посты</a></li>
+                            {% endif %}
+                            <li class="nav-item"><a class="nav-link" href="#"> Профиль: <q>{{ user.username }}</q> </a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'account_logout' %}"> Выход </a></li>
+                        {% else %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'account_login' %}"> Вход </a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'account_signup' %}"> Регистрация </a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

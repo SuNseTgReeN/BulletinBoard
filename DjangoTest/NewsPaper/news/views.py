@@ -1,7 +1,11 @@
 from datetime import datetime
 
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 from .forms import PostForm
 from .models import Post, Author
@@ -18,6 +22,7 @@ class PostList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['time_now'] = datetime.utcnow()
+        context['is_not_authors'] = not self.request.user.groups.filter(name='authors').exists()
         return context
 
 
@@ -39,13 +44,15 @@ class SearchList(ListView):
         return context
 
 
-class PostDetail(DetailView):
+class PostDetail(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+    permission_required = 'news.view_Post'
     model = Post
     template_name = 'post.html'
     context_object_name = 'post'
 
 
-class PostCreate(CreateView):
+class PostCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = 'news.add_Post'
     form_class = PostForm
     model = Post
     template_name = 'post_create.html'
@@ -57,13 +64,24 @@ class PostCreate(CreateView):
         return super().form_valid(form)
 
 
-class PostUpdate(UpdateView):
+class PostUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = 'news.change_Post'
     form_class = PostForm
     model = Post
     template_name = 'post_create.html'
 
 
-class PostDelete(DeleteView):
+class PostDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    permission_required = 'news.delete_Post'
     model = Post
     template_name = 'post_delete.html'
     success_url = reverse_lazy('post_list')
+
+
+@login_required
+def upgrade_me(request):
+    user = request.user
+    authors_group = Group.objects.get(name='authors')
+    if not request.user.groups.filter(name='authors').exists():
+        authors_group.user_set.add(user)
+    return redirect('/')
