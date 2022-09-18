@@ -2,13 +2,14 @@ from django.urls import reverse_lazy
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView
 )
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .filters import ProductFilter
 from .forms import ProductForm
 from .models import Product
 
 
-class ProductsList(ListView):
+class ProductsList(LoginRequiredMixin, ListView):
     model = Product
     ordering = 'name'
     template_name = 'products.html'
