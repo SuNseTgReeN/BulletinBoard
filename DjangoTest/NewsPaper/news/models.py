@@ -26,21 +26,21 @@ class Author(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=64, unique=True)
+    subscribers = models.ManyToManyField(User, related_name='categories')
 
     def __str__(self):
         return self.name.title()
 
 
 class Post(models.Model):
-    post_author = models.ForeignKey(Author, on_delete=models.CASCADE)
 
     NEWS = 'NW'
     ARTICLE = 'AR'
-    CATEGORY_CHOICES = (
+    CATEGORY_CHOICES = [
         (NEWS, 'Новость'),
         (ARTICLE, 'Статья'),
-    )
-
+    ]
+    post_author = models.ForeignKey(Author, on_delete=models.CASCADE)
     category_type = models.CharField(max_length=2, choices=CATEGORY_CHOICES, default=ARTICLE)
     date_creation = models.DateTimeField(auto_now_add=True)
     post_category = models.ManyToManyField(Category, through='PostCategory')
@@ -57,7 +57,7 @@ class Post(models.Model):
         self.save()
 
     def preview(self):
-        return self.text[0:48] + '...'
+        return self.text[0:128] + '...'
 
     def count(self):
         count = 0
@@ -74,6 +74,9 @@ class Post(models.Model):
 class PostCategory(models.Model):
     post_through = models.ForeignKey(Post, on_delete=models.CASCADE)
     category_through = models.ForeignKey(Category, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f' {self.post_through.title} | {self.category_through.name}'
 
 
 class Comment(models.Model):
@@ -93,18 +96,3 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.text.title()
-
-
-# class Profile(models.Model):
-#     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
-#     bio = models.TextField(null=True, blank=True)
-#     profile_pic = models.ImageField(null=True, blank=True, upload_to="images/profile/")
-#     facebook = models.CharField(max_length=50, null=True, blank=True)
-#     twitter = models.CharField(max_length=50, null=True, blank=True)
-#     instagram = models.CharField(max_length=50, null=True, blank=True)
-#     steam = models.CharField(max_length=50, null=True, blank=True)
-#
-#
-# def __str__(self):
-#     return str(self.user)
-

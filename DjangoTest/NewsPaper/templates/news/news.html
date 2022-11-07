@@ -12,35 +12,31 @@
 {% endblock navbar %}
 
 {% block content %}
-    <h1>Все новости</h1>
-    <h4>
-        <table>
-            <tr>
-                <td>Новостей за все время:</td>
-                <td>{{ news|length }}</td>
-            </tr>
-        </table>
-    </h4>
-    <hr>
-    {% if news %}
-        <table>
-            <tr>
-                <td>Заголовок</td>
-                <td>Дата публикации</td>
-                <td>Превью</td>
-            </tr>
-            {% for post in news %}
-            <tr>
-                <td>{{ post.title }}</td>
-                <td>{{ post.date_creation|date:'d M Y' }}</td>
-                <td>{{ post.preview }}</td>
-            </tr>
-            {% endfor %}
+<h1 class="text-center">Новости <span class="text-muted fs-6 fw-normal">Всего: {{ all_news }}</span></h1>
+<hr>
 
-        </table>
-    {% else %}
-        <h2>Новостей нет!</h2>
-    {% endif %}
+{% if news %}
+<ul class="list-group list-group-flush">
+    {% for post in news %}
+    <li class="list-group-flush">
+        <small class="fw-bold">{{ post.date_creation|date:'d M Y' }}</small>>
+        <a href="{% url 'post_detail' post.id %}">{{post.title}}</a>
+        <small class="text-muted">(автор: {{ post.post_author}})</small> <br>
+        <small class="fw-bold">категории:
+            {% for post_category in post.post_category.all %}
+                <a href="{% url 'category_list' post_category.id %}">{{ post_category }}</a>
+            {% endfor %}
+        </small>
+        <p>{{ post.preview }}</p>
+    </li>
+    {% endfor %}
+</ul>
+
+
+
+{% else %}
+<h2>Новостей нет!</h2>
+{% endif %}
 
 {% if page_obj.has_previous %}
     <a href="?{% url_replace page=1 %}">1</a>
