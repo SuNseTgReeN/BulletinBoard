@@ -169,3 +169,5 @@ APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
 
 if DEBUG:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+    #### Тест изменения ###
