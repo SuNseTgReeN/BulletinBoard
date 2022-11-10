@@ -18,15 +18,10 @@ logger = logging.getLogger(__name__)
 
 def my_job():
     today = datetime.datetime.now()
-    print(today)
     last_week = today - datetime.timedelta(days=7)
-    print(last_week)
     posts = Post.objects.filter(date_creation__gte=last_week)
-    print(posts)
     categories = set(posts.values_list('post_category__name', flat=True))
-    print(categories)
     subscribers = set(Category.objects.filter(name__in=categories).values_list('subscribers__email', flat=True))
-    print(subscribers)
     html_content = render_to_string(
         'daily_post.html',
         {
@@ -34,14 +29,12 @@ def my_job():
             'posts': posts,
         }
     )
-    print(html_content)
     msg = EmailMultiAlternatives(
         subject='Статьи за неделю',
         body='',
         from_email=settings.DEFAULT_FROM_EMAIL,
         to=subscribers,
     )
-    print(msg)
     msg.attach_alternative(html_content, 'text/html')
     msg.send()
 

@@ -68,7 +68,7 @@ class Post(models.Model):
         return self.title.title()
 
     def get_absolute_url(self):
-        return reverse('post_detail', args=[str(self.id)])
+        return reverse('news:post_detail', args=[str(self.id)])
 
 
 class PostCategory(models.Model):

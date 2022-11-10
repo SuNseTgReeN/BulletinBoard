@@ -2,6 +2,8 @@ from django.urls import path
 from .views import PostList, PostDetail, SearchList, PostCreate, PostUpdate, PostDelete, upgrade_me, CategoryListView, \
     subscribe
 
+app_name = 'news'
+
 urlpatterns = [
     path('', PostList.as_view(), name='post_list'),
     path('<int:pk>', PostDetail.as_view(), name='post_detail'),
