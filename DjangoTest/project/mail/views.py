@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect
-from django.views import generic
+from django.views import generic, View
 from django.core.mail import EmailMultiAlternatives
+from django.http import HttpResponse
 from datetime import datetime
 
 from django.template.loader import render_to_string
 from .models import Appointment
 from .forms import AppointmentForm
+from .tasks import hello, printer
 
 
 class AppointmentView(generic.CreateView):
@@ -43,3 +45,10 @@ class AppointmentView(generic.CreateView):
         msg.send()  # отсылаем
 
         return redirect('appointments:make_appointment')
+
+
+class IndexView(View):
+    def get(self, request):
+        hello.delay()
+        printer.delay(10)
+        return HttpResponse('Hello!')
