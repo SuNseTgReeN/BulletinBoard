@@ -17,8 +17,8 @@
     <li class="list-inline-item">{{ post.text }}</li>
     <li class="list-inline-item">
            <div class="d-grid gap-2 d-md-block">
-                <a class="linc" href="{% url 'news:post_update' post.id %}">Редактировать новость</a>
-                <a class="linc" href="{% url 'news:post_delete' post.id %}">Удалить новость</a>
+                <a class="linc" href="{% url 'post_update' post_detail.id %}">Редактировать новость</a>
+                <a class="linc" href="{% url 'post_delete' post_detail.id %}">Удалить новость</a>
            </div>
     </li>
 </ul>
