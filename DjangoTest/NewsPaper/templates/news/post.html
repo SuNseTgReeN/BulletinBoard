@@ -2,23 +2,23 @@
 {% extends 'flatpages/default.html' %}
 
 {% block title %}
-{{ post }}
+{{ post_detail }}
 {% endblock title %}
 
 {% block content %}
-<h1 class="text-center">{{ post.title }} <span class="text-muted fs-6 fw-normal"></span></h1>
+<h1 class="text-center">{{ post_detail.title }} <span class="text-muted fs-6 fw-normal"></span></h1>
 <hr>
     <table>
         <tr>
-            <td>{{ post.date_creation|date:'d M Y' }}</td>
+            <td>{{ post_detail.date_creation|date:'d M Y' }}</td>
         </tr>
     </table>
 <ul class="list-inline">
-    <li class="list-inline-item">{{ post.text }}</li>
+    <li class="list-inline-item">{{ post_detail.text }}</li>
     <li class="list-inline-item">
            <div class="d-grid gap-2 d-md-block">
-                <a class="linc" href="{% url 'news:post_update' post.id %}">Редактировать новость</a>
-                <a class="linc" href="{% url 'news:post_delete' post.id %}">Удалить новость</a>
+                <a class="linc" href="{% url 'news:post_update' post_detail.id %}">Редактировать новость</a>
+                <a class="linc" href="{% url 'news:post_delete' post_detail.id %}">Удалить новость</a>
            </div>
     </li>
 </ul>

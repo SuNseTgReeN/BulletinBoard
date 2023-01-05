@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
+from django.core.cache import cache
 from django.shortcuts import redirect, get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
@@ -53,7 +54,16 @@ class SearchList(ListView):
 class PostDetail(DetailView):
     model = Post
     template_name = 'news/post.html'
-    context_object_name = 'post'
+    context_object_name = 'post_detail'
+
+    def get_object(self, *args, **kwargs):
+        obj = cache.get(f'post-{self.kwargs["pk"]}', None)
+        print('cache.get obj', obj)
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'post-{self.kwargs["pk"]}', obj)
+            print('if not obj', obj)
+        return obj
 
 
 class PostCreate(LoginRequiredMixin, CreateView):
