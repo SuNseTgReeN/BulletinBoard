@@ -34,7 +34,6 @@ class Category(models.Model):
 
 
 class Post(models.Model):
-
     NEWS = 'NW'
     ARTICLE = 'AR'
     CATEGORY_CHOICES = [
@@ -73,8 +72,7 @@ class Post(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        cache.delete(f'news-{self.pk}')
-        cache.delete(f'post_detail-{self.pk}')
+        cache.delete(f'post-{self.pk}')
 
 
 class PostCategory(models.Model):

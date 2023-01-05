@@ -32,13 +32,6 @@ class PostList(ListView):
         context['all_news'] = self.all_news.__len__()
         return context
 
-    def get_object(self, *args, **kwargs):
-        obj = cache.get(f'news-{self.kwargs["pk"]}', None)
-        if not obj:
-            obj = super().get_object(queryset=self.queryset)
-            cache.set(f'news-{self.kwargs["pk"]}', obj)
-
-
 
 class SearchList(ListView):
     model = Post
@@ -64,11 +57,13 @@ class PostDetail(DetailView):
     context_object_name = 'post_detail'
 
     def get_object(self, *args, **kwargs):
-        obj = cache.get(f'post_detail-{self.kwargs["pk"]}', None)
+        obj = cache.get(f'post-{self.kwargs["pk"]}', None)
+        print('cache.get obj', obj)
         if not obj:
             obj = super().get_object(queryset=self.queryset)
-            cache.set(f'post_detail-{self.kwargs["pk"]}', obj)
-
+            cache.set(f'post-{self.kwargs["pk"]}', obj)
+            print('if not obj', obj)
+        return obj
 
 
 class PostCreate(LoginRequiredMixin, CreateView):

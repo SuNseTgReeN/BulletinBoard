@@ -23,11 +23,11 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ml-auto">
-                        <li class="nav-item"><a class="nav-link" href="{% url 'create' %}">Новый пост</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'search' %}">Поиск</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'news:create' %}">Новый пост</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'news:search' %}">Поиск</a></li>
                         {% if request.user.is_authenticated %}
                             {% if request.user.authors_group %}
-                                <li class="nav-item"><a class="nav-link" href="{% url 'upgrade' %}"> Стать автором </a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'news:upgrade' %}"> Стать автором </a></li>
                             {% else %}
                                 <li class="nav-item"><a class="nav-link" href="#">Мои посты</a></li>
                             {% endif %}
