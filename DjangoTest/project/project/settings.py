@@ -16,7 +16,6 @@ from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
@@ -27,7 +26,6 @@ SECRET_KEY = 'django-insecure-(v3k@qq@zm^+u*o!0utozz*_=09pj@rhq5#^_3lkx_xw94v)m4
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1']
-
 
 # Application definition
 
@@ -98,7 +96,6 @@ AUTHENTICATION_BACKENDS = [
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
@@ -108,7 +105,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -128,7 +124,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
@@ -139,7 +134,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
@@ -155,7 +149,7 @@ STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
 
-#LOGIN_URL = '/accounts/login/'
+# LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 
 ACCOUNT_EMAIL_REQUIRED = True
@@ -169,8 +163,9 @@ load_dotenv()
 
 EMAIL_HOST = 'smtp.yandex.ru'  # адрес сервера Яндекс-почты для всех один и тот же
 EMAIL_PORT = 465  # порт smtp сервера тоже одинаковый
-EMAIL_HOST_USER = os.getenv("EmailHostUser")  # ваше имя пользователя, например, если ваша почта user@yandex.ru, то сюда надо писать user, иными словами, это всё то что идёт до собаки
-EMAIL_HOST_PASSWORD = os.getenv("EmailHostPassword") # пароль от почты
+EMAIL_HOST_USER = os.getenv(
+    "EmailHostUser")  # ваше имя пользователя, например, если ваша почта user@yandex.ru, то сюда надо писать user, иными словами, это всё то что идёт до собаки
+EMAIL_HOST_PASSWORD = os.getenv("EmailHostPassword")  # пароль от почты
 EMAIL_USE_SSL = True  # Яндекс использует ssl, подробнее о том, что это, почитайте в дополнительных источниках, но включать его здесь обязательно
 
 # формат даты, которую будет воспринимать наш задачник (вспоминаем модуль по фильтрам)
@@ -179,9 +174,9 @@ APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 # если задача не выполняется за 25 секунд, то она автоматически снимается, можете поставить время побольше, но как правило, это сильно бьёт по производительности сервера
 APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
 
- ##############
- # Настройки Celery
- ##############
+##############
+# Настройки Celery
+##############
 
 CELERY_BROKER_URL = 'redis://localhost:6379'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
@@ -189,7 +184,92 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
+##############
+# Настройки логирования
+##############
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'style': '{',
+    'formatters': {
+        'for_debug': {
+            'format': '{asctime} - {levelname} - {module} - {message}',
+            'style': '{',
+        },
+        'for_warning': {
+            'format': '{asctime} - {levelname} - {module} - {message} - {pathname}',
+            'style': '{',
+        },
+        'for_error_and_critical': {
+            'format': '{asctime} - {levelname} - {module} - {message} - {pathname} - {exc_info}',
+            'style': '{',
+        }
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        }
+    },
+    'handlers': {
+        'console': {
+            'filters': ['True'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'for_debug',
+        },
+        'general': {
+            'filters': ['True'],
+            'class': 'logging.FileHandler',
+            'formatter': 'for_debug',
+            'filename': 'general.log',
+        },
+        'errors': {
+            'class': 'logging.FileHandler',
+            'formatter': 'for_error_and_critical',
+            'filename': 'errors.log',
+        },
+        'security': {
+            'class': 'logging.FileHandler',
+            'formatter': 'for_error_and_critical',
+            'filename': 'security.log',
+        },
+        'mail_admins': {
+            'filters': ['False'],
+            'class': 'django.utils.log.AdminEmailHandler',
+            'formatter': 'for_warning',
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'general'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['errors', 'mail_admins', 'general'],
+            'level': 'INFO',
+        },
+        'django.server': {
+            'handlers': ['errors', 'mail_admins', 'general'],
+            'level': 'INFO',
+        },
+        'django.security': {
+            'handlers': ['security', 'general'],
+            'level': 'INFO',
+        },
+        'django.template': {
+            'handlers': ['errors', 'general'],
+            'level': 'INFO',
+        },
+        'django.db.backends': {
+            'handlers': ['errors', 'general'],
+            'level': 'INFO',
+        },
+    },
+}
+
 if DEBUG:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-
-
