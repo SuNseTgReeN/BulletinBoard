@@ -64,6 +64,9 @@ SITE_ID = 1
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+
+    'django.middleware.locale.LocaleMiddleware',
+
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -216,12 +219,12 @@ LOGGING = {
     },
     'handlers': {
         'console': {
-            'filters': ['True'],
+            'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
             'formatter': 'for_debug',
         },
         'general': {
-            'filters': ['True'],
+            'filters': ['require_debug_true'],
             'class': 'logging.FileHandler',
             'formatter': 'for_debug',
             'filename': 'general.log',
@@ -237,7 +240,7 @@ LOGGING = {
             'filename': 'security.log',
         },
         'mail_admins': {
-            'filters': ['False'],
+            'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler',
             'formatter': 'for_warning',
         }
@@ -270,6 +273,14 @@ LOGGING = {
         },
     },
 }
+
+##############
+# Настройки локализации
+##############
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale')
+]
 
 if DEBUG:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
