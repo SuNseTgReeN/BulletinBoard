@@ -2,9 +2,10 @@
 
 {% load custom_filters %}
 {% load custom_tags %}
+{% load i18n %}
 
 {% block title %}
-Новости
+{% trans "News" %}
 {% endblock title %}
 
 {% block navbar %}
@@ -12,7 +13,8 @@
 {% endblock navbar %}
 
 {% block content %}
-<h1 class="text-center">Новости <span class="text-muted fs-6 fw-normal">Всего: {{ all_news }}</span></h1>
+<h1 class="text-center">{% trans "News" %}<span class="text-muted fs-6 fw-normal">
+    {% trans "all" %}: {{ all_news }}</span></h1>
 <hr>
 
 {% if news %}
@@ -21,8 +23,8 @@
     <li class="list-group-flush">
         <small class="fw-bold">{{ post.date_creation|date:'d M Y' }}</small>>
         <a href="{% url 'news:post_detail' post.id %}">{{post.title}}</a>
-        <small class="text-muted">(автор: {{ post.post_author}})</small> <br>
-        <small class="fw-bold">категории:
+        <small class="text-muted">({% trans "Author" %}: {{ post.post_author}})</small> <br>
+        <small class="fw-bold">{% trans "Categories" %}:
             {% for post_category in post.post_category.all %}
                 <a href="{% url 'news:category_list' post_category.id %}">{{ post_category }}</a>
             {% endfor %}
@@ -35,7 +37,7 @@
 
 
 {% else %}
-<h2>Новостей нет!</h2>
+<h2>{% trans "No new news at this point" %}</h2>
 {% endif %}
 
 {% if page_obj.has_previous %}

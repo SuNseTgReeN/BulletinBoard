@@ -1,5 +1,6 @@
-<!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
 {% extends 'flatpages/default.html' %}
+
+{% load i18n %}
 
 {% block title %}
 {{ post_detail }}
@@ -17,8 +18,8 @@
     <li class="list-inline-item">{{ post_detail.text }}</li>
     <li class="list-inline-item">
            <div class="d-grid gap-2 d-md-block">
-                <a class="linc" href="{% url 'news:post_update' post_detail.id %}">Редактировать новость</a>
-                <a class="linc" href="{% url 'news:post_delete' post_detail.id %}">Удалить новость</a>
+                <a class="linc" href="{% url 'news:post_update' post_detail.id %}">{% trans "Edit the news" %}</a>
+                <a class="linc" href="{% url 'news:post_delete' post_detail.id %}">{% trans "Delete post" %}</a>
            </div>
     </li>
 </ul>
