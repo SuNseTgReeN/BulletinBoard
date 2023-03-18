@@ -1,0 +1,26 @@
+{% extends 'flatpages/default.html' %}
+
+{% load i18n %}
+
+{% block title %}
+{{ notification_detail }}
+{% endblock title %}
+
+{% block content %}
+
+<div class="col-lg-6">
+    <div class="card mb-4">
+        {% if notification_detail.photo %}
+        <a href="#!"><img class="card-img-top" src="{{notification_detail.photo.url}}"/></a>
+        {% endif %}
+        <div class="card-body">
+            <div class="small text-muted">{{notification_detail.date_creation|date:'d M Y'}}</div>
+            <h2 class="card-title">{{notification_detail.title}}</h2>
+            <p class="card-text">{{notification_detail.text|safe}}</p>
+            <a class="btn btn-primary" href="#!">Edit →</a>
+            <a class="btn btn-primary" href="#!">Delete →</a>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

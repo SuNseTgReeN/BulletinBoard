@@ -23,6 +23,7 @@ class Notification(models.Model):
     title = models.CharField(max_length=128, verbose_name=_('Title'))
     text = models.TextField(verbose_name=_('Text'))
     rating = models.SmallIntegerField(default=0, verbose_name=_('Rating'))
+    photo = models.ImageField(upload_to='photos/%Y/%m/%d/', verbose_name=_('Photo'))
 
     def like(self):
         self.rating += 1
@@ -35,6 +36,7 @@ class Notification(models.Model):
     def preview(self):
         return self.text[0:128] + '...'
 
+
     def __str__(self):
         return self.title.title()
 
@@ -46,8 +48,9 @@ class Notification(models.Model):
     #     cache.delete(f'post-{self.pk}')
 
     class Meta:
-        verbose_name = _('Post')
-        verbose_name_plural = _('Posts')
+        verbose_name = _('Notification')
+        verbose_name_plural = _('Notifications')
+        ordering = ['-date_creation', 'rating']
 
 
 class Responses(models.Model):
@@ -62,4 +65,3 @@ class Responses(models.Model):
     class Meta:
         verbose_name = _('Response')
         verbose_name_plural = _('Responses')
-

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Board.apps.BoardConfig',  # Основное приложение, с базовым функционалом
     'django_summernote',  # Приложение редактор WYSIWYG.
+    'django_filters',  # Приложение для добавления строк фильтрации и поиска на странице
 
 ]
 
@@ -122,10 +123,8 @@ USE_TZ = True
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
-STATICFILES_DIRS = [
-    BASE_DIR / "static"
-]
-STATIC_URL = 'static/'
+
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 # Default primary key field type
