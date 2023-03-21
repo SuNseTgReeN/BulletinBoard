@@ -13,46 +13,31 @@ Notification
 {% endblock navbar %}
 
 {% block search %}
-<!--<div class="card mb-4">-->
-<!--    <div class="card-header">Search</div>-->
-<!--    <div class="card-body">-->
-<!--        <div class="input-group">-->
-<!--            <form action="{% url 'Board:notification_search' %}" method="get">-->
-<!--                {{ filterset.form.non_field_errors }}-->
-<!--                {{ filterset.form.name__icontains.errors }}-->
-<!--                {{ filterset.form.as_p }}-->
-<!--                <label for="{{ filterset.form.name__icontains.id_for_label }}">Search</label>-->
-<!--                <input-->
-<!--                        class="form-control"-->
-<!--                        type="text"-->
-<!--                        placeholder="Enter search term..."-->
-<!--                        aria-label="Enter search term..."-->
-<!--                        aria-describedby="button-search"-->
-<!--                        id="{{ filterset.form.title__icontains.id }}"-->
-<!--                        name="{{ filterset.form.title__icontains.name }}"-->
-<!--                        value="{{ filterset.form.title__icontains.value }}"-->
-<!--                />-->
-<!--                <input class="btn btn-primary" value="Submit" type="submit" />-->
-<!--            </form>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
-
-<form action="" method="get" >
-    {{ filterset.form.non_field_errors }}
-    {{ filterset.form.title__icontains.errors }}
-
-    <label for="{{ filterset.form.title__icontains.id_for_label }}">Search</label>
-
-    <input
-        id="{{ filterset.form.title__icontains.id }}"
-        name="{{ filterset.form.title__icontains.name }}"
-        value="{{ filterset.form.title__icontains.value }}"
-        class="form-control"
-    >
-    <input class="btn btn-primary" value="Submit" type="submit" >
-</form>
-
+<div class="card mb-4">
+    <div class="card-header">Search</div>
+    <div class="card-body">
+        <div class="input-group">
+            <form action="{% url 'Board:notification_search' %}" method="get">
+                {{ filterset.form.non_field_errors }}
+                {{ filterset.form.q.errors }}
+                <label for="{{ filterset.form.q.id_for_label }}">Search</label>
+                <input
+                        class="form-control"
+                        type="text"
+                        placeholder="Enter search term..."
+                        aria-label="Enter search term..."
+                        aria-describedby="button-search"
+                        id ="{{ filterset.form.q.id }}"
+                        name="{{ filterset.form.q.name }}"
+                        {% if filterset.form.q.value%}
+                        value="{{ filterset.form.q.value }}"
+                        {% endif %}
+                />
+                <input class="btn btn-primary" value="Submit" type="submit" />
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock search %}
 
 {% block content %}
