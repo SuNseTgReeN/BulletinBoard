@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.urls import reverse
 
 from django.utils.translation import gettext_lazy as _
 
@@ -36,12 +37,12 @@ class Notification(models.Model):
     def preview(self):
         return self.text[0:128] + '...'
 
-
     def __str__(self):
         return self.title.title()
 
-    # def get_absolute_url(self):
-    #     return reverse('news:post_detail', args=[str(self.id)])
+    def get_absolute_url(self):
+        return reverse('Board:notification_detail', args=[str(self.id)])
+
     #
     # def save(self, *args, **kwargs):
     #     super().save(*args, **kwargs)
@@ -54,13 +55,17 @@ class Notification(models.Model):
 
 
 class Responses(models.Model):
-    responses_advertising = models.ForeignKey(Notification, on_delete=models.CASCADE, verbose_name=_('Response'))
+    responses_advertising = models.ForeignKey(Notification, on_delete=models.CASCADE, verbose_name=_('Notification'))
     responses_user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_('User'))
     text = models.TextField(verbose_name=_('Response text'))
     date_creation = models.DateTimeField(auto_now_add=True, verbose_name=_('Date the response was created'))
+    status = models.BooleanField(default=False, verbose_name=_('Status response'))
 
     def __str__(self):
         return self.text.title()
+
+    def get_absolute_url(self):
+        return reverse('Board:responses_list_resp', args=[str(self.id)])
 
     class Meta:
         verbose_name = _('Response')

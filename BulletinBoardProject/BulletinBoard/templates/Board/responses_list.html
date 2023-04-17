@@ -6,58 +6,31 @@
 
 
 {% block title_page %}
-Notification
+Responses
 {% endblock title_page %}
 
-{% block navbar %}
-{% endblock navbar %}
-
-{% block search %}
-<div class="card mb-4">
-    <div class="card-header">Search</div>
-    <div class="card-body">
-        <div class="input-group">
-            <form action="{% url 'Board:notification_search' %}" method="get">
-                {{ filterset.form.non_field_errors }}
-                {{ filterset.form.q.errors }}
-                <label for="{{ filterset.form.q.id_for_label }}">Search</label>
-                <input
-                        class="form-control"
-                        type="text"
-                        placeholder="Enter search term..."
-                        aria-label="Enter search term..."
-                        aria-describedby="button-search"
-                        id ="{{ filterset.form.q.id }}"
-                        name="{{ filterset.form.q.name }}"
-                        {% if filterset.form.q.value%}
-                        value="{{ filterset.form.q.value }}"
-                        {% endif %}
-                />
-                <input class="btn btn-primary" value="Submit" type="submit" />
-            </form>
-        </div>
-    </div>
-</div>
-{% endblock search %}
-
 {% block content %}
-{% if notification_list %}
+
+{% if responses %}
 <div class="col-lg-6">
     <div class="card mb-4">
-        {% for Notification in notification_list %}
-        {% if Notification.photo %}
-        <a href="{% url 'Board:notification_detail' Notification.id %}"><img class="card-img-top" src="{{Notification.photo.url}}"/></a>
-        {% endif %}
+        {% for response in responses %}
         <div class="card-body">
-            <div class="small text-muted">{{Notification.date_creation|date:'d M Y'}}</div>
-            <h2 class="card-title">{{Notification.title}}</h2>
-            <p class="card-text">{{Notification.preview|safe}}</p>
-            <a class="btn btn-primary" href="{% url 'Board:notification_detail' Notification.id %}">Read more →</a>
+            <div class="small text-muted">{{response.date_creation|date:'d M Y'}}</div>
+            <h2 class="card-title">{{response.responses_advertising}}</h2>
+            <p class="card-text">{{response.text}}</p>
+            <h6 class="card-subtitle mb-2 text-muted">{{response.responses_user}}</h6>
+            <a class="btn btn-success" href="">Accept</a>
+            <a class="btn btn-danger" href="">Delete</a>
         </div>
         {% endfor %}
     </div>
 </div>
-
+{% else %}
+<div class="col-lg-6">
+    <p class="card-text">No responses</p>
+</div>
+{% endif %}
 <!-- Pagination-->
 <nav aria-label="Pagination">
     <hr class="my-0" />
@@ -87,7 +60,5 @@ Notification
         {% endif %}
     </ul>
 </nav>
-{% endif %}
+
 {% endblock content %}
-
-

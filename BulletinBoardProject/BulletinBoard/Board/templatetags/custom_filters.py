@@ -1,5 +1,5 @@
 from django import template
-from .russian_ban_words import unwanteded_words
+from Board.russian_ban_words import unwanteded_words
 
 register = template.Library()
 
@@ -10,3 +10,4 @@ def censor_filter(text):
     for word in unwanted_words:
         text = text.replace(word, '***')  # Заменяем нежелательное слово символами ***
     return text
+

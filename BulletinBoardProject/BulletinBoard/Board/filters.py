@@ -16,3 +16,6 @@ class ProductFilter(FilterSet):
             Q(title__icontains=value) |
             Q(text__icontains=value)
         )
+
+class UserFilter(FilterSet):
+    pass

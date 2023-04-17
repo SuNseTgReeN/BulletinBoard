@@ -1,0 +1,20 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+{{ response_create }}
+{% endblock title %}
+
+{% block content %}
+<div class="col-lg-6">
+        <form class="form-horizontal form_middle" method="post">
+            {% csrf_token %}
+                {{ form.non_field_errors }}
+            <div class="fieldWrapper">
+                {{ form.text.errors }}
+                <label for="{{ form.text.id_for_label}}">Text</label>
+                {{ form.text }}
+            </div>
+            <input class="btn btn-primary" type="submit" value="Save" />
+        </form>
+</div>
+{% endblock content %}
