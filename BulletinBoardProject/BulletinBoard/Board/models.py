@@ -64,9 +64,6 @@ class Responses(models.Model):
     def __str__(self):
         return self.text.title()
 
-    def get_absolute_url(self):
-        return reverse('Board:responses_list_resp', args=[str(self.id)])
-
     class Meta:
         verbose_name = _('Response')
         verbose_name_plural = _('Responses')

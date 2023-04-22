@@ -44,10 +44,12 @@ class NotificationForm(forms.ModelForm):
             raise forms.ValidationError("No image!")
         else:
             w, h = get_image_dimensions(photo)
-            if w != 850:
-                raise forms.ValidationError("The image is %i pixel wide. It's supposed to be 850px" % w)
-            if h != 350:
-                raise forms.ValidationError("The image is %i pixel high. It's supposed to be 350px" % h)
+            if w > 850:
+                raise forms.ValidationError("The width of the image is %i pixel. It is assumed that it should be "
+                                            "larger than 850 pixels" % w)
+            if h > 350:
+                raise forms.ValidationError("The width of the image is %i pixel. It is assumed that it should be more "
+                                            "than 350 pixels" % h)
 
         return cleaned_data
 
@@ -57,15 +59,7 @@ class ResponsesForm(forms.ModelForm):
 
     class Meta:
         model = Responses
-        fields = [
-            'text',
-            'responses_advertising',
-            'responses_user'
-        ]
-        widgets = {
-            'responses_advertising': forms.HiddenInput(),
-            'responses_user': forms.HiddenInput()
-        }
+        fields = ['text']
 
     def clean(self):
         cleaned_data = super().clean()

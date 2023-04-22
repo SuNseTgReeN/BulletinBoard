@@ -20,8 +20,8 @@ Responses
             <h2 class="card-title">{{response.responses_advertising}}</h2>
             <p class="card-text">{{response.text}}</p>
             <h6 class="card-subtitle mb-2 text-muted">{{response.responses_user}}</h6>
-            <a class="btn btn-primary" href="">Edit</a>
-            <a class="btn btn-danger" href="">Delete</a>
+            <a class="btn btn-primary" href="{% url 'Board:my_responses_update' notification.id %}">Edit</a>
+            <a class="btn btn-danger" href="{% url 'Board:my_responses_delete' notification.id %}">Delete</a>
         </div>
         {% endfor %}
     </div>

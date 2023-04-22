@@ -1,4 +1,3 @@
-from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
@@ -99,6 +98,12 @@ class ResponsesListResp(ListView):
     context_object_name = 'responses'
     paginate_by = 4
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        notification = Responses.responses_advertising
+        context['notification'] = notification
+        return context
+
     def get_queryset(self):
         return Responses.objects.filter(responses_user=self.request.user)
 
@@ -107,27 +112,47 @@ class ResponsesListRespCreate(CreateView):
     form_class = ResponsesForm
     model = Responses
     template_name = 'Board/responses_create.html'
+    success_url = reverse_lazy('Board:my_responses_list')
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
+        ad = Notification.objects.get(id=kwargs['pk'])
         if form.is_valid():
             resp = form.save(commit=False)
             resp.responses_user = request.user
+            resp.responses_advertising = ad
             resp.save()
             return self.form_valid(form)
-        return redirect('Board:notification_detail', **kwargs)
-            
 
-# class ResponsesListRespUpdate(UpdateView):
-#     form_class = ResponsesForm
-#     model = Responses
-#     template_name = ''
-#
-#     def form_valid(self, form):
-#         fields = form.save(commit=False)
-#         fields.notification_user = self.request.user
-#         fields.save()
-#         return super().form_valid(form)
+
+class ResponsesListRespUpdate(UpdateView):
+    form_class = ResponsesForm
+    model = Responses
+    template_name = 'Board/responses_create.html'
+    success_url = reverse_lazy('Board:my_responses_list')
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        ad = Notification.objects.get(id=kwargs['pk'])
+        if form.is_valid():
+            resp = form.save(commit=False)
+            resp.responses_user = request.user
+            resp.responses_advertising = ad
+            resp.save()
+            return self.form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        notification = Notification.objects.get(id=kwargs['pk'])
+        title_notification = notification.title
+        context['title_notification'] = title_notification
+        return context
+
+
+class ResponsesListRespDelete(DeleteView):
+    model = Responses
+    template_name = 'Board/responses_delete.html'
+    success_url = reverse_lazy('Board:my_responses_list')
 
 
 class CategoryListView(ListView):

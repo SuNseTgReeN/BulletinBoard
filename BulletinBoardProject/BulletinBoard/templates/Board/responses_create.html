@@ -6,6 +6,7 @@
 
 {% block content %}
 <div class="col-lg-6">
+    <p class="card-text">Editing the response to an ad {{title_notification}}</p>
         <form class="form-horizontal form_middle" method="post">
             {% csrf_token %}
                 {{ form.non_field_errors }}
