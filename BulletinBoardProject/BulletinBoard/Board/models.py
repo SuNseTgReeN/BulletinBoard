@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.db import models
 from django.urls import reverse
 
@@ -43,10 +44,10 @@ class Notification(models.Model):
     def get_absolute_url(self):
         return reverse('Board:notification_detail', args=[str(self.id)])
 
-    #
-    # def save(self, *args, **kwargs):
-    #     super().save(*args, **kwargs)
-    #     cache.delete(f'post-{self.pk}')
+    # save используется вместе с get_object в классе NotificationDetail
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        cache.delete(f'notification-{self.pk}')
 
     class Meta:
         verbose_name = _('Notification')
@@ -59,7 +60,8 @@ class Responses(models.Model):
     responses_user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_('User'))
     text = models.TextField(verbose_name=_('Response text'))
     date_creation = models.DateTimeField(auto_now_add=True, verbose_name=_('Date the response was created'))
-    status = models.BooleanField(default=False, verbose_name=_('Status response'))
+    status = models.IntegerField(choices=((0, 'Not considered'), (1, 'Accept'), (2, 'Reject')), default=0,
+                                 verbose_name=_('Status response'))
 
     def __str__(self):
         return self.text.title()

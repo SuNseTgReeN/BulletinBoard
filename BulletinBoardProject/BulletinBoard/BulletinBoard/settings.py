@@ -12,22 +12,24 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-kk^)7xd5o8-lrkj9t6mngt3e9^op2%mim$p*e@)^-d^3lyd%-a'
+SECRET_KEY = os.getenv("SecretKey")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['127.0.0.1']
 
 # Application definition
 
@@ -38,15 +40,24 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'Board.apps.BoardConfig',  # Основное приложение, с базовым функционалом
     'django_summernote',  # Приложение редактор WYSIWYG.
     'django_filters',  # Приложение для добавления строк фильтрации и поиска на странице
+
+    'django.contrib.sites',  # allauth зависит от настройки сайта
+    'allauth',  # Приложение авторизации и регистрации
+    'allauth.account',
+    'allauth.socialaccount',
 
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+
+    'django.middleware.locale.LocaleMiddleware', #  Локализация
+
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -74,9 +85,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'BulletinBoard.wsgi.application'
 
-
+##############
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+##############
 
 DATABASES = {
     'default': {
@@ -85,9 +97,10 @@ DATABASES = {
     }
 }
 
-
+##############
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
+##############
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -104,9 +117,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+##############
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
+##############
 
 LANGUAGE_CODE = 'ru'
 
@@ -116,16 +130,29 @@ USE_I18N = True
 
 USE_TZ = True
 
-
+##############
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
+##############
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
-
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
+#  Настройки папки локализации
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale')
+]
+
+
+if not DEBUG:
+    STATIC_ROOT = '/home/django/www-data/example.com/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static/'),
+]
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -133,6 +160,60 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+##############
+# Настройки авторизации allauth
+##############
+AUTHENTICATION_BACKENDS = [
+    # Необходимо войти под именем пользователя в Django admin, независимо от `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+    # специфические методы аутентификации `allauth`, такие как вход по электронной почте
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+LOGIN_REDIRECT_URL = "/"  # Переадресация после успешного входа в систему
+
+SITE_ID = 1  # Параметр SITE_ID указывает идентификатор базы данных Site объекта, связанного с этим конкретным файлом
+# настроек.
+
+ACCOUNT_EMAIL_VRIFICATION = 'mandatory'  # Обязательное подтверждение регистрации по электронной почте
+ACCOUNT_AUTHENTIFICATION_METHOD = 'email'  # Метод входа
+ACCOUNT_EMAIL_REQUIRED = True  # Установить адрес электронной почты при регистрации пользователя
+
+##############
+# Настройки почты
+##############
+EMAIL_HOST = 'smtp.mail.ru'  # адрес сервера Яндекс-почты
+EMAIL_PORT = 465  # порт smtp сервера
+EMAIL_HOST_USER = os.getenv("EmailHostUser")  # ваше имя пользователя
+DEFAULT_FROM_EMAIL = os.getenv("DefaultFromEmail")  # Отправитель по умолчанию
+EMAIL_HOST_PASSWORD = os.getenv("EmailHostPassword")  # Это не пароль электронной почты, а код авторизации
+EMAIL_USE_TLS = True  # Это должно быть True, иначе отправка не будет успешной
+SITE_URL = 'http://127.0.0.1:8000'  # Адрес сайта
+SITE_NAME = 'Доска объявлений'  # Имя сайта
+
+##############
+# Настройки Celery и Redis
+##############
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+##############
+# Настройки кэширования
+##############
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'cache_files'), # Указываем, куда будем сохранять кэшируемые файлы! Не забываем создать папку cache_files внутри папки с manage.py!
+    }
+}
+
+##############
+# Настройки в режиме разработчика
+##############
+
+# Если включен режим разработки, то все письма отправляются в консоль
 if DEBUG:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-

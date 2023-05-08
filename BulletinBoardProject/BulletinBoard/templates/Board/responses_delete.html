@@ -1,5 +1,7 @@
 {% extends 'flatpages/default.html' %}
 
+{% load i18n %}
+
 {% block title %}
 {{ responses_delete }}
 {% endblock title %}
@@ -10,10 +12,10 @@
         <form class="form-horizontal form_middle" method="post">
             {% csrf_token %}
             <div class="card-header">
-                Delete
+                {% trans "Delete" %}
             </div>
             <div class="card-body">
-                <h5 class="card-title">Do you really want to delete "{{ object.text }}"?</h5>
+                <h5 class="card-title">{% trans "Do you really want to delete" %} "{{ object.text }}"?</h5>
                 <input class="btn btn-primary" type="submit" value="Delete" />
             </div>
         </form>

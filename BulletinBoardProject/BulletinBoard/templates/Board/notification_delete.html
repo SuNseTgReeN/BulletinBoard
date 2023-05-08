@@ -1,5 +1,7 @@
 {% extends 'flatpages/default.html' %}
 
+{% load i18n %}
+
 {% block title %}
 {{ notification_delete }}
 {% endblock title %}
@@ -13,7 +15,7 @@
                 Delete
             </div>
             <div class="card-body">
-                <h5 class="card-title">Do you really want to delete "{{ object.title }}"?</h5>
+                <h5 class="card-title">{% trans "Do you really want to delete" %} "{{ object.title }}"?</h5>
                 <input class="btn btn-primary" type="submit" value="Delete" />
             </div>
         </form>
