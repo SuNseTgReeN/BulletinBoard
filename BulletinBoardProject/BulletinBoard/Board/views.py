@@ -118,7 +118,7 @@ class ResponsesCreate(LoginRequiredMixin, CreateView):
             response_text = resp.text  # Получаю текст отклика из формы, что бы использовать его в email
             ad_id = resp.responses_advertising.id  #  Получаю идентификатор объявления, что бы использовать его в ссылке, в email
             resp.save()
-            send_response(response_text, ad_id, notification_user_email)  # Используется таска, для отправки email
+            send_response.delay(response_text, ad_id, notification_user_email)  # Используется таска, для отправки email
             return self.form_valid(form)
 
     def get_success_url(self):
@@ -161,7 +161,7 @@ def response_accept(request, response_id, notification_id):
     response = get_object_or_404(Responses, id=response_id)
     response.status = 1  # Изменяем статус на "Подтвержден"
     response.save()
-    send_response_accept(response_id)
+    send_response_accept.delay(response_id)
     return redirect('Board:notification_detail', pk=notification_id)
 
 @login_required
@@ -169,7 +169,7 @@ def response_reject(request, response_id, notification_id):
     response = get_object_or_404(Responses, id=response_id)
     response.status = 2  # Изменяем статус на "Отклонен"
     response.save()
-    send_response_reject(response_id)
+    send_response_reject.delay(response_id)
     return redirect('Board:notification_detail', pk=notification_id)
 
 
